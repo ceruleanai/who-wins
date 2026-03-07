@@ -4,19 +4,23 @@ import { supabase } from '../services/supabase.js'
 const user = ref(null)
 const loading = ref(true)
 
-// Set up auth state listener once
-if (supabase) {
-  supabase.auth.getSession().then(({ data: { session } }) => {
-    user.value = session?.user ?? null
-    loading.value = false
-  })
+// Resolves once the initial session check completes
+const ready = new Promise((resolve) => {
+  if (supabase) {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      user.value = session?.user ?? null
+      loading.value = false
+      resolve()
+    })
 
-  supabase.auth.onAuthStateChange((_event, session) => {
-    user.value = session?.user ?? null
-  })
-} else {
-  loading.value = false
-}
+    supabase.auth.onAuthStateChange((_event, session) => {
+      user.value = session?.user ?? null
+    })
+  } else {
+    loading.value = false
+    resolve()
+  }
+})
 
 export function useAuth() {
   async function signUp(email, password) {
@@ -42,6 +46,7 @@ export function useAuth() {
   return {
     user: readonly(user),
     loading: readonly(loading),
+    ready,
     signUp,
     signIn,
     signOut,

@@ -145,6 +145,7 @@ function handleKeydown(e) {
           :name="result.animal1.name"
           :image-url="animal1Image"
           :fun-facts="result.animal1.funFacts"
+          :extra="result.animal1.extra"
           :is-winner="!result.isDraw && result.winner?.toLowerCase() === result.animal1.name?.toLowerCase()"
           side="left"
         />
@@ -152,6 +153,7 @@ function handleKeydown(e) {
           :name="result.animal2.name"
           :image-url="animal2Image"
           :fun-facts="result.animal2.funFacts"
+          :extra="result.animal2.extra"
           :is-winner="!result.isDraw && result.winner?.toLowerCase() === result.animal2.name?.toLowerCase()"
           side="right"
         />

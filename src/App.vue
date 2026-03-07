@@ -1,5 +1,8 @@
 <script setup>
 import NavBar from './components/NavBar.vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 </script>
 
 <template>
@@ -11,8 +14,8 @@ import NavBar from './components/NavBar.vue'
       </div>
     </header>
 
-    <!-- Subtitle -->
-    <div class="subtitle">
+    <!-- Subtitle (hidden on landing page which has its own hero) -->
+    <div v-if="route.name !== 'auth'" class="subtitle">
       <p class="subtitle__text">The Ultimate Animal Showdown!</p>
     </div>
 

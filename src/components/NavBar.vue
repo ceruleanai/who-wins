@@ -7,7 +7,7 @@ const router = useRouter()
 
 async function handleSignOut() {
   await signOut()
-  router.push('/')
+  router.push('/auth')
 }
 </script>
 

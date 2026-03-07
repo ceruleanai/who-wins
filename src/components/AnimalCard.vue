@@ -3,6 +3,7 @@ defineProps({
   name: { type: String, required: true },
   imageUrl: { type: String, default: null },
   funFacts: { type: Array, default: () => [] },
+  extra: { type: Object, default: null },
   isWinner: { type: Boolean, default: false },
   side: { type: String, default: 'left' },
 })
@@ -35,6 +36,47 @@ defineProps({
 
     <!-- Name -->
     <h3 class="animal-card__name">{{ name }}</h3>
+
+    <!-- Scientific name -->
+    <p v-if="extra" class="animal-card__scientific">
+      <em>{{ extra.scientificName }}</em>
+      <span v-if="extra.taxonomy" class="animal-card__taxonomy">{{ extra.taxonomy }}</span>
+    </p>
+
+    <!-- Battle cry -->
+    <div v-if="extra?.battleCry" class="animal-card__battle-cry" :class="`animal-card__battle-cry--${side}`">
+      <span class="animal-card__battle-cry-text">"{{ extra.battleCry }}"</span>
+    </div>
+
+    <!-- Quick info grid -->
+    <div v-if="extra" class="animal-card__info-grid">
+      <div class="animal-card__info-item">
+        <span class="animal-card__info-emoji">{{ extra.habitatEmoji }}</span>
+        <span class="animal-card__info-label">Habitat</span>
+        <span class="animal-card__info-value">{{ extra.habitat }}</span>
+      </div>
+      <div class="animal-card__info-item">
+        <span class="animal-card__info-emoji">{{ extra.dietEmoji }}</span>
+        <span class="animal-card__info-label">Diet</span>
+        <span class="animal-card__info-value">{{ extra.diet }}</span>
+      </div>
+      <div class="animal-card__info-item">
+        <span class="animal-card__info-emoji">📏</span>
+        <span class="animal-card__info-label">Size</span>
+        <span class="animal-card__info-value">{{ extra.sizeComparison }}</span>
+      </div>
+      <div class="animal-card__info-item">
+        <span class="animal-card__info-emoji">{{ extra.conservationEmoji }}</span>
+        <span class="animal-card__info-label">Status</span>
+        <span class="animal-card__info-value">{{ extra.conservationStatus }}</span>
+      </div>
+    </div>
+
+    <!-- Superpower badge -->
+    <div v-if="extra?.superpower" class="animal-card__superpower">
+      <span class="animal-card__superpower-icon">⚡</span>
+      <span class="animal-card__superpower-text">{{ extra.superpower }}</span>
+    </div>
 
     <!-- Fun facts -->
     <div v-if="funFacts.length" class="animal-card__facts">
@@ -145,7 +187,7 @@ defineProps({
 
 .animal-card__name {
   font-size: 1.4rem;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
   text-transform: capitalize;
 }
 
@@ -157,6 +199,116 @@ defineProps({
   color: var(--team-right);
 }
 
+/* Scientific name */
+.animal-card__scientific {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-bottom: 12px;
+}
+
+.animal-card__taxonomy {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-style: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: #f1f5f9;
+  color: var(--text-secondary);
+  border-radius: 50px;
+  vertical-align: middle;
+}
+
+/* Battle cry */
+.animal-card__battle-cry {
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  background: #f8f9fa;
+  border-radius: var(--radius-sm);
+  border-left: 4px solid #ccc;
+  text-align: left;
+}
+
+.animal-card__battle-cry--left {
+  border-left-color: var(--team-left);
+}
+
+.animal-card__battle-cry--right {
+  border-left-color: var(--team-right);
+}
+
+.animal-card__battle-cry-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+/* Quick info grid */
+.animal-card__info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.animal-card__info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 6px;
+  background: #f8f9fa;
+  border-radius: var(--radius-sm);
+}
+
+.animal-card__info-emoji {
+  font-size: 1.1rem;
+}
+
+.animal-card__info-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-light);
+}
+
+.animal-card__info-value {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  line-height: 1.3;
+  text-align: center;
+}
+
+/* Superpower badge */
+.animal-card__superpower {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border-radius: var(--radius-sm);
+  border: 1px solid #a7f3d0;
+  text-align: left;
+}
+
+.animal-card__superpower-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.animal-card__superpower-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #065f46;
+  line-height: 1.4;
+}
+
+/* Fun facts */
 .animal-card__facts {
   text-align: left;
   background: #f8f9fa;
