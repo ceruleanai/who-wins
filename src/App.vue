@@ -1,8 +1,10 @@
 <script setup>
 import NavBar from './components/NavBar.vue'
 import { useRoute } from 'vue-router'
+import { useSeo } from './composables/useSeo.js'
 
 const route = useRoute()
+useSeo()
 </script>
 
 <template>
