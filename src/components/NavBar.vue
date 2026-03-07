@@ -1,13 +1,22 @@
 <script setup>
 import { useAuth } from '../composables/useAuth.js'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const { user, loading, signOut } = useAuth()
 const router = useRouter()
+const route = useRoute()
 
 async function handleSignOut() {
   await signOut()
   router.push('/auth')
+}
+
+function handleSignIn() {
+  if (route.name === 'auth') {
+    document.getElementById('auth-section')?.scrollIntoView({ behavior: 'smooth' })
+  } else {
+    router.push('/auth')
+  }
 }
 </script>
 
@@ -20,9 +29,9 @@ async function handleSignOut() {
         <router-link v-if="user" to="/history" class="nav__link">My Fights</router-link>
 
         <template v-if="!loading">
-          <router-link v-if="!user" to="/auth" class="nav__link nav__link--auth">
+          <button v-if="!user" class="nav__link nav__link--auth" @click="handleSignIn">
             Sign In
-          </router-link>
+          </button>
           <template v-else>
             <span class="nav__email">{{ user.email }}</span>
             <button class="nav__link nav__link--auth" @click="handleSignOut">Sign Out</button>
