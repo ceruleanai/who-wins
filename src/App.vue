@@ -1,21 +1,25 @@
 <script setup>
-import BattleArena from './components/BattleArena.vue'
+import NavBar from './components/NavBar.vue'
 </script>
 
 <template>
   <div class="app">
-    <!-- Header -->
+    <!-- Nav -->
     <header class="header">
       <div class="container">
-        <h1 class="header__title">WHO WINS?</h1>
-        <p class="header__subtitle">The Ultimate Animal Showdown!</p>
+        <NavBar />
       </div>
     </header>
+
+    <!-- Subtitle -->
+    <div class="subtitle">
+      <p class="subtitle__text">The Ultimate Animal Showdown!</p>
+    </div>
 
     <!-- Main -->
     <main class="main">
       <div class="container">
-        <BattleArena />
+        <router-view />
       </div>
     </main>
 
@@ -37,23 +41,19 @@ import BattleArena from './components/BattleArena.vue'
 
 /* Header */
 .header {
+  padding: 8px 0 0;
+}
+
+/* Subtitle */
+.subtitle {
   text-align: center;
-  padding: 40px 0 20px;
+  padding: 0 0 8px;
 }
 
-.header__title {
-  font-size: 3.5rem;
-  color: white;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  letter-spacing: 4px;
-  animation: bounceIn 0.8s ease-out;
-}
-
-.header__subtitle {
+.subtitle__text {
   font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
-  margin-top: 4px;
   animation: slideUp 0.6s ease-out 0.3s both;
 }
 
@@ -72,16 +72,7 @@ import BattleArena from './components/BattleArena.vue'
 }
 
 @media (max-width: 600px) {
-  .header {
-    padding: 24px 0 12px;
-  }
-
-  .header__title {
-    font-size: 2.4rem;
-    letter-spacing: 2px;
-  }
-
-  .header__subtitle {
+  .subtitle__text {
     font-size: 1rem;
   }
 }

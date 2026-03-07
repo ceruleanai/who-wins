@@ -7,6 +7,11 @@ import WinnerAnnouncement from './WinnerAnnouncement.vue'
 import LoadingBattle from './LoadingBattle.vue'
 import { fetchBattleResult } from '../services/gemini.js'
 import { fetchAnimalImage } from '../services/wikipedia.js'
+import { useAuth } from '../composables/useAuth.js'
+import { useFights } from '../composables/useFights.js'
+
+const { user } = useAuth()
+const { saveFight } = useFights()
 
 const animal1 = ref('')
 const animal2 = ref('')
@@ -15,6 +20,7 @@ const loading = ref(false)
 const error = ref(null)
 const animal1Image = ref(null)
 const animal2Image = ref(null)
+const saveStatus = ref(null) // 'saving' | 'saved' | 'error' | null
 
 const canFight = computed(() => {
   return animal1.value.trim() && animal2.value.trim() && !loading.value
@@ -46,6 +52,17 @@ async function fight() {
     result.value = battleResult.value
     animal1Image.value = img1.status === 'fulfilled' ? img1.value : null
     animal2Image.value = img2.status === 'fulfilled' ? img2.value : null
+
+    // Auto-save if user is signed in
+    if (user.value && result.value) {
+      saveStatus.value = 'saving'
+      try {
+        await saveFight(result.value, animal1Image.value, animal2Image.value)
+        saveStatus.value = 'saved'
+      } catch {
+        saveStatus.value = 'error'
+      }
+    }
   } catch (err) {
     error.value = err.message || 'Something went wrong. Please try again!'
   } finally {
@@ -60,6 +77,7 @@ function newBattle() {
   error.value = null
   animal1Image.value = null
   animal2Image.value = null
+  saveStatus.value = null
 }
 
 function handleKeydown(e) {
@@ -155,6 +173,14 @@ function handleKeydown(e) {
         :explanation="result.explanation"
         :is-draw="result.isDraw"
       />
+
+      <!-- Save status -->
+      <div class="arena__save-status">
+        <span v-if="saveStatus === 'saving'" class="arena__save-text">Saving to your history...</span>
+        <span v-else-if="saveStatus === 'saved'" class="arena__save-text arena__save-text--success">Saved to your history!</span>
+        <span v-else-if="saveStatus === 'error'" class="arena__save-text arena__save-text--error">Couldn't save — try again later</span>
+        <router-link v-else-if="!user" to="/auth" class="arena__save-text arena__save-text--prompt">Sign in to save your battles</router-link>
+      </div>
 
       <!-- New battle button -->
       <div class="arena__action">
@@ -306,6 +332,34 @@ function handleKeydown(e) {
   background: white;
   color: var(--text-primary);
   transform: scale(1.05);
+}
+
+/* Save status */
+.arena__save-status {
+  text-align: center;
+}
+
+.arena__save-text {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.arena__save-text--success {
+  color: #a7f3d0;
+}
+
+.arena__save-text--error {
+  color: #fecaca;
+}
+
+.arena__save-text--prompt {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.arena__save-text--prompt:hover {
+  color: white;
 }
 
 /* Responsive */
